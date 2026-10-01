@@ -1,5 +1,10 @@
+#ifndef UNICODE
 #define UNICODE
+#endif
+#ifndef _UNICODE
 #define _UNICODE
+#endif
+
 #include <windows.h>
 #include <windowsx.h>
 #include <vector>
@@ -38,6 +43,20 @@ const COLORREF CLR_GREEN_BTN    = RGB(92, 126, 16);
 const COLORREF CLR_GREEN_HOVER  = RGB(117, 156, 22);
 const COLORREF CLR_ITEM_ACTIVE  = RGB(42, 71, 94);
 
+// Вспомогательная функция для безопасного создания шрифта
+static HFONT MakeFont(int height, int weight = FW_NORMAL) {
+    return CreateFontW(
+        height, 0, 0, 0, weight,
+        FALSE, FALSE, FALSE,
+        DEFAULT_CHARSET,
+        OUT_DEFAULT_PRECIS,
+        CLIP_DEFAULT_PRECIS,
+        CLEARTYPE_QUALITY,
+        DEFAULT_PITCH | FF_DONTCARE,
+        L"Segoe UI"
+    );
+}
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_PAINT: {
@@ -54,16 +73,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         HBITMAP memBmp = CreateCompatibleBitmap(hdc, width, height);
         HGDIOBJ oldBmp = SelectObject(memDC, memBmp);
 
-        HFONT hFontLogo = CreateFontW(22, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
-        HFONT hFontMenu = CreateFontW(16, 0, 0, 0, FW_SEMIBOLD, FALSE, FALSE, FALSE,
-            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
-        HFONT hFontMain = CreateFontW(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
-            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
-        HFONT hFontTitle = CreateFontW(28, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
-        HFONT hFontPlay = CreateFontW(18, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
+        HFONT hFontLogo  = MakeFont(22, FW_BOLD);
+        HFONT hFontMenu  = MakeFont(16, FW_SEMIBOLD);
+        HFONT hFontMain  = MakeFont(15, FW_NORMAL);
+        HFONT hFontTitle = MakeFont(28, FW_BOLD);
+        HFONT hFontPlay  = MakeFont(18, FW_BOLD);
 
         SetBkMode(memDC, TRANSPARENT);
 
